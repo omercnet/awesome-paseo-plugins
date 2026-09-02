@@ -3,9 +3,6 @@ name: Lint
 on:
   pull_request:
     branches: [main]
-    paths:
-      - "**/*.md"
-      - ".github/workflows/lint.yml"
   push:
     branches: [main]
     paths:
