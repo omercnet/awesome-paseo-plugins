@@ -22,6 +22,7 @@ Paseo plugins add native workspace panels, composer pills, Command Center items,
 
 - [agent-monitor](https://github.com/omercnet/paseo-agent-monitor) - One roster for every agent on a daemon. Triage buckets (Attention / Running / Idle / Closed), project-first grouping, text filter, live diff stats, and one-tap archive sweep. Answers "which of my 38 agents needs me right now" without walking the workspace tree. Web and desktop.
 - [github-board](https://github.com/gpambrozio/paseo-plugins/tree/main/github-board) - A sidebar surface with four columns — issues, draft PRs, open PRs, and discussions — covering what you authored plus what is open on the repositories you own. Cards carry CI check counts, editable labels, and a "Send to chat" button that creates a workspace on the project matching that repository and starts an agent on the card. Requires `gh` installed and authenticated on the daemon machine. Install with `paseo plugin add gpambrozio/paseo-plugins --path github-board`.
+- [github-workbench](https://github.com/AllenReder/paseo-github-workbench) - A workbench for GitHub issues and pull requests, with account and repository views, resource refresh, and workspace actions.
 - [pr-radar](https://github.com/omercnet/paseo-pr-radar) - Turns pull requests linked to active workspaces into a viewer-aware delivery queue grouped by needs you, being handled, waiting externally, and ready, with actions to prompt an existing agent or start one; requires `gh` installed and authenticated on the daemon machine and Paseo 0.6 or later.
 
 ## Workspace panels
