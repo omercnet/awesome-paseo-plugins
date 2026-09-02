@@ -1,0 +1,4 @@
+title = "Awesome Paseo Plugins secret scanning"
+
+[extend]
+useDefault = true

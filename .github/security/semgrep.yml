@@ -1,0 +1,56 @@
+rules:
+  - id: paseo.dynamic-code-execution
+    message: Dynamic code execution runs with the plugin's unsandboxed daemon privileges.
+    severity: ERROR
+    languages: [javascript, typescript]
+    pattern-either:
+      - pattern: eval($EXPRESSION)
+      - pattern: new Function(...)
+      - pattern: Function(...)
+
+  - id: paseo.child-process-execution
+    message: Review process execution, command construction, inherited environment, and cleanup.
+    severity: WARNING
+    languages: [javascript, typescript]
+    pattern-either:
+      - pattern: $CP.exec(...)
+      - pattern: $CP.execSync(...)
+      - pattern: $CP.spawn(...)
+      - pattern: $CP.spawnSync(...)
+      - pattern: $CP.fork(...)
+
+  - id: paseo.dynamic-import
+    message: Review non-static module loading and ensure the loaded target cannot be influenced externally.
+    severity: WARNING
+    languages: [javascript, typescript]
+    pattern: import($TARGET)
+
+  - id: paseo.environment-access
+    message: Review access to daemon environment variables and ensure credentials cannot be exposed.
+    severity: INFO
+    languages: [javascript, typescript]
+    pattern-either:
+      - pattern: process.env.$KEY
+      - pattern: process.env[$KEY]
+
+  - id: paseo.filesystem-access
+    message: Review filesystem access because backend plugins run with daemon-user permissions.
+    severity: INFO
+    languages: [javascript, typescript]
+    pattern-either:
+      - pattern: $FS.readFile(...)
+      - pattern: $FS.readFileSync(...)
+      - pattern: $FS.writeFile(...)
+      - pattern: $FS.writeFileSync(...)
+      - pattern: $FS.rm(...)
+      - pattern: $FS.rmSync(...)
+      - pattern: $FS.watch(...)
+
+  - id: paseo.outbound-network-access
+    message: Review the destination, transmitted data, authentication, disclosure, and timeout behavior.
+    severity: WARNING
+    languages: [javascript, typescript]
+    pattern-either:
+      - pattern: fetch(...)
+      - pattern: $HTTP.request(...)
+      - pattern: $HTTP.get(...)

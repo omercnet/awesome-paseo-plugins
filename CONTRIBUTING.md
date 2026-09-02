@@ -22,6 +22,10 @@ Only include platform limits and a minimum version when they apply. Keep the des
 
 In the pull request, explain why the plugin belongs on a curated list and how you verified installation. New categories need a clear scope and enough plugins to justify the split.
 
+## Automated security review
+
+Plugin submissions are scanned as untrusted source code. The scanner clones the public repository without running its code, package manager, install scripts, submodules, or Git hooks. It checks secrets with Gitleaks, dependencies with OSV-Scanner, source patterns with curated Semgrep rules, and GitHub workflows with actionlint and zizmor. It then sends a filtered text-only copy and those deterministic findings to the configured model provider for advisory review. Google Gemini is the default; maintainers may select an OpenCode Zen model. Do not submit repositories containing secrets, personal information, or confidential material. Automated review can miss vulnerabilities and does not replace maintainer or user review.
+
 ## Updating or removing a plugin
 
 Corrections and removals are welcome. Include evidence when reporting an archived repository, broken installation, unsupported compatibility claim, misleading description, or security concern.

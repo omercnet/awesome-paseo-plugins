@@ -1,0 +1,12 @@
+{
+  "name": "awesome-paseo-plugins",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test .github/scripts/*.test.mjs",
+    "check:scripts": "node --check .github/scripts/plugin-targets.mjs && node --check .github/scripts/scan-plugins.mjs && node --check .github/scripts/static-scan.mjs && node --check .github/scripts/publish-scan.mjs"
+  },
+  "devDependencies": {
+    "opencode-ai": "1.18.25"
+  }
+}

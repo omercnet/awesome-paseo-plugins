@@ -1,0 +1,105 @@
+name: Plugin security scan
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/plugin-security.yml"
+      - ".github/scripts/plugin-*.mjs"
+      - ".github/scripts/static-scan*.mjs"
+      - ".github/security/**"
+      - ".opencode/agents/plugin-security.md"
+      - "package.json"
+      - "package-lock.json"
+  pull_request_target: # zizmor: ignore[dangerous-triggers] The base SHA is checked out and PR content is only parsed as data.
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - "README.md"
+  schedule:
+    - cron: "43 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: plugin-security-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Check out trusted scanner
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.base.sha || github.sha }}
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+
+      - name: Test scanner scripts
+        run: npm test
+
+      - name: Select plugin targets
+        id: targets
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: >-
+          node .github/scripts/plugin-targets.mjs
+          --event "$GITHUB_EVENT_PATH"
+          --readme README.md
+          --output "$RUNNER_TEMP/plugin-targets.json"
+
+      - name: Install pinned dependencies
+        if: steps.targets.outputs.count != '0'
+        run: npm ci
+
+      - name: Install pinned security tools
+        if: steps.targets.outputs.count != '0'
+        env:
+          GOBIN: ${{ runner.temp }}/security-bin
+          PIPX_BIN_DIR: ${{ runner.temp }}/security-bin
+          PIPX_HOME: ${{ runner.temp }}/pipx
+        run: |
+          pipx install semgrep==1.175.0
+          pipx install zizmor==1.30.0
+          go install github.com/zricethezav/gitleaks/v8@v8.30.1
+          go install github.com/google/osv-scanner/v2/cmd/osv-scanner@v2.5.1
+          go install github.com/rhysd/actionlint/cmd/actionlint@v1.7.12
+
+      - name: Review plugins with selected model
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+          SCAN_MODEL: ${{ vars.SCAN_MODEL || 'google/gemini-3.1-flash-lite' }}
+        run: >-
+          node .github/scripts/scan-plugins.mjs
+          --targets "$RUNNER_TEMP/plugin-targets.json"
+          --output "$RUNNER_TEMP/plugin-security-report.md"
+          --config-dir "$GITHUB_WORKSPACE/.opencode"
+          --security-config-dir "$GITHUB_WORKSPACE/.github/security"
+          --actionlint "$RUNNER_TEMP/security-bin/actionlint"
+          --gitleaks "$RUNNER_TEMP/security-bin/gitleaks"
+          --osv-scanner "$RUNNER_TEMP/security-bin/osv-scanner"
+          --semgrep "$RUNNER_TEMP/security-bin/semgrep"
+          --zizmor "$RUNNER_TEMP/security-bin/zizmor"
+          --opencode "$GITHUB_WORKSPACE/node_modules/.bin/opencode"
+          --model "$SCAN_MODEL"
+
+      - name: Publish scan report
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: >-
+          node .github/scripts/publish-scan.mjs
+          "$RUNNER_TEMP/plugin-security-report.md"
+          "$GITHUB_EVENT_PATH"
