@@ -43,7 +43,7 @@ Paseo plugins add native workspace panels, composer pills, Command Center items,
 
 *Plugins that add daemon-side behavior: schedulers, webhooks, notifications, integrations.*
 
-- [defer](https://github.com/tomgrin10/paseo-defer) - Queues a message for an agent and delivers it after a relative delay, at a chosen local time, or when the Claude rolling usage window resets, holding delivery until the target session goes idle so the message arrives as a new turn instead of steering an active one. A composer pill shows what is waiting, queued messages stay editable until delivery starts, and the daemon-side queue survives plugin reloads, restarts, and reconnecting clients. Borrows Paseo's own daemon client at runtime to read provider usage, which the public plugin SDK does not expose. Requires Paseo 0.7 or later.
+- [defer](https://github.com/tomgrin10/paseo-defer) - Queues a message for an agent and delivers it after a delay, at a chosen local time, or when the Claude usage window resets, waiting for the session to go idle so the message starts a new turn. Requires Paseo 0.7 or later.
 
 ## Composer and attachments
 
