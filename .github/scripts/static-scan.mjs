@@ -116,8 +116,11 @@ export function parseZizmorReport(report, sourceRoot) {
   return report.slice(0, MAX_FINDINGS_PER_TOOL).map((item) => {
     const severity = String(item.determinations?.severity ?? "UNKNOWN").toUpperCase();
     const location = item.locations?.[0] ?? {};
-    const path = location.symbolic?.key ?? location.symbolic?.path ?? location.concrete?.path ?? ".";
-    const row = location.concrete?.location?.row;
+    const symbolicKey = location.symbolic?.key;
+    const path = typeof symbolicKey === "string"
+      ? symbolicKey
+      : symbolicKey?.Local?.verbatim_path ?? location.symbolic?.path ?? location.concrete?.path ?? ".";
+    const row = location.concrete?.location?.start_point?.row ?? location.concrete?.location?.row;
     return finding({
       blocking: severity === "HIGH",
       line: Number.isInteger(row) ? row + 1 : null,

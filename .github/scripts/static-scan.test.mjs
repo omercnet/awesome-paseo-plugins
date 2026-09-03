@@ -79,6 +79,26 @@ test("normalizes OSV, actionlint, and zizmor results", () => {
   assert.equal(zizmor[0].blocking, true);
 });
 
+test("normalizes zizmor json-v1 local paths", () => {
+  const findings = parseZizmorReport(
+    [{
+      ident: "zizmor.confused-deputy",
+      desc: "insufficient permissions",
+      determinations: { severity: "Medium" },
+      locations: [{
+        symbolic: {
+          key: { Local: { verbatim_path: "/repo/.github/workflows/release.yml" } },
+        },
+        concrete: { location: { start_point: { row: 2, column: 4 } } },
+      }],
+    }],
+    "/repo",
+  );
+
+  assert.equal(findings[0].path, ".github/workflows/release.yml");
+  assert.equal(findings[0].line, 3);
+});
+
 test("validates plugin structure while accepting a repository-level license", async () => {
   const root = await mkdtemp(join(tmpdir(), "plugin-checks-"));
   const plugin = join(root, "plugins", "sample");
