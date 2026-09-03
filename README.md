@@ -33,6 +33,7 @@ Paseo plugins add native workspace panels, composer pills, Command Center items,
 - [reasoning-display](https://github.com/mcowger/paseo-plugins/tree/main/reasoning-display) - Replaces built-in agent reasoning blocks with expandable Markdown cards that match Paseo's native tool-call styling, with expand-last, collapsed, and always-expand display modes. Requires Paseo 0.7.0-beta.2 or later.
 - [skills](https://github.com/gpambrozio/paseo-plugins/tree/main/skills) - Lists the skills and commands an agent session can run, shows where each one comes from, renders its `SKILL.md`, and invokes it on the live session. Claude and Codex sessions get their skill files read off the daemon's filesystem; every other provider shows what the running session reports. Install with `paseo plugin add gpambrozio/paseo-plugins --path skills`.
 - [subagent-activity](https://github.com/mcowger/paseo-plugins/tree/main/subagent-activity) - Adds an agent-scoped activity pane for monitoring managed Paseo descendants and provider-native subagent activity. Requires Paseo 0.7.0-beta.2 or later.
+- [workspace-activity](https://github.com/ABorakati/paseo-workspace-activity) - Adds Agent Monitor and Tasks panels to any workspace for live subagent trees, tool-call inspection, steering, cancellation, and per-agent todo progress. Web and desktop.
 
 ## Themes
 
