@@ -30,6 +30,7 @@ Paseo plugins add native workspace panels, composer pills, Command Center items,
 
 - [pi-tasks-timeline](https://github.com/mcowger/paseo-plugins/tree/main/pi-tasks-timeline) - Keeps Pi task lists visible in Paseo timelines and workspace or explorer panels, with a composer pill for active tasks.
 - [opencode-session-overview](https://github.com/mcowger/paseo-plugins/tree/main/opencode-session-overview) - Adds an agent-scoped activity pane for OpenCode sessions with session details, usage, context, tasks, loaded skills and commands, workspace metadata, and observed subagents. Requires Paseo 0.7.0-beta.2 or later.
+- [reasoning-display](https://github.com/mcowger/paseo-plugins/tree/main/reasoning-display) - Replaces built-in agent reasoning blocks with expandable Markdown cards that match Paseo's native tool-call styling, with expand-last, collapsed, and always-expand display modes. Requires Paseo 0.7.0-beta.2 or later.
 - [skills](https://github.com/gpambrozio/paseo-plugins/tree/main/skills) - Lists the skills and commands an agent session can run, shows where each one comes from, renders its `SKILL.md`, and invokes it on the live session. Claude and Codex sessions get their skill files read off the daemon's filesystem; every other provider shows what the running session reports. Install with `paseo plugin add gpambrozio/paseo-plugins --path skills`.
 - [subagent-activity](https://github.com/mcowger/paseo-plugins/tree/main/subagent-activity) - Adds an agent-scoped activity pane for monitoring managed Paseo descendants and provider-native subagent activity. Requires Paseo 0.7.0-beta.2 or later.
 
@@ -43,8 +44,8 @@ Paseo plugins add native workspace panels, composer pills, Command Center items,
 
 *Plugins that add daemon-side behavior: schedulers, webhooks, notifications, integrations.*
 
-- [defer](https://github.com/tomgrin10/paseo-defer) - Queues a message for an agent and delivers it after a relative delay, at a chosen local time, or when the Claude rolling usage window resets, holding delivery until the target session goes idle so the message arrives as a new turn instead of steering an active one. A composer pill shows what is waiting, queued messages stay editable until delivery starts, and the daemon-side queue survives plugin reloads, restarts, and reconnecting clients. Borrows Paseo's own daemon client at runtime to read provider usage, which the public plugin SDK does not expose. Requires Paseo 0.7 or later.
 - [send-to-paseo](https://github.com/tomgrin10/send-to-paseo/tree/main/plugin) - A Chrome extension and plugin that send a message to Paseo straight from a GitHub or Graphite pull request page. Starts a new agent in the workspace that belongs to that PR, or creates the workspace when you don't have one.
+- [defer](https://github.com/tomgrin10/paseo-defer) - Queues a message for an agent and delivers it after a delay, at a chosen local time, or when the Claude usage window resets, waiting for the session to go idle so the message starts a new turn. Requires Paseo 0.7 or later.
 
 ## Composer and attachments
 
