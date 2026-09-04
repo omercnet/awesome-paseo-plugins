@@ -41,7 +41,7 @@ Paseo plugins add native workspace panels, composer pills, Command Center items,
 
 *App themes contributed through the plugin API.*
 
-<!-- Add theme plugins here. -->
+- [paseo-monokai-pro](https://github.com/JrDw0/paseo-monokai-pro) - Monokai Pro's Pro, Light, Classic, Machine, Ristretto, Octagon, and Spectrum filter schemes as app themes, with each of the eight palette tokens mapped to a named color from the scheme rather than an approximation, and syntax colors left to Paseo's built-in highlight theme.
 
 ## Daemon and automation
 
