@@ -7,6 +7,6 @@
     "check:scripts": "node --check .github/scripts/plugin-targets.mjs && node --check .github/scripts/scan-plugins.mjs && node --check .github/scripts/static-scan.mjs && node --check .github/scripts/publish-scan.mjs"
   },
   "devDependencies": {
-    "opencode-ai": "1.18.25"
+    "opencode-ai": "1.18.26"
   }
 }
