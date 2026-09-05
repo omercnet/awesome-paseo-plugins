@@ -49,6 +49,7 @@ Paseo plugins add native workspace panels, composer pills, Command Center items,
 *Plugins that add daemon-side behavior: schedulers, webhooks, notifications, integrations.*
 
 - [defer](https://github.com/tomgrin10/paseo-defer) - Queues a message for an agent and delivers it after a delay, at a chosen local time, or when the Claude usage window resets, waiting for the session to go idle so the message starts a new turn. Requires Paseo 0.7 or later.
+- [launchd-jobs](https://github.com/gpambrozio/paseo-plugins/tree/main/launchd-jobs) - A sidebar surface that schedules shell commands as LaunchAgents, on a five-field cron expression or a fixed interval, so launchd runs them whether or not Paseo is open. Each job shows what launchd reports, its last twenty runs with durations and exit codes, and the tail of its log. The daemon must run on macOS. Install with `paseo plugin add gpambrozio/paseo-plugins --path launchd-jobs`.
 
 ## Composer and attachments
 
