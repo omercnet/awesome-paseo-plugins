@@ -48,6 +48,7 @@ Paseo plugins add native workspace panels, composer pills, Command Center items,
 
 *Plugins that add daemon-side behavior: schedulers, webhooks, notifications, integrations.*
 
+- [send-to-paseo](https://github.com/tomgrin10/send-to-paseo/tree/main/plugin) - A Chrome extension and plugin that send a message to Paseo straight from a GitHub or Graphite pull request page. Starts a new agent in the workspace that belongs to that PR, or creates the workspace when you don't have one.
 - [defer](https://github.com/tomgrin10/paseo-defer) - Queues a message for an agent and delivers it after a delay, at a chosen local time, or when the Claude usage window resets, waiting for the session to go idle so the message starts a new turn. Requires Paseo 0.7 or later.
 
 ## Composer and attachments
