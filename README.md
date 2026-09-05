@@ -41,7 +41,7 @@ Paseo plugins add native workspace panels, composer pills, Command Center items,
 
 *App themes contributed through the plugin API.*
 
-- [paseo-dracula](https://github.com/omercnet/paseo-dracula) - Dracula Classic app theme using the official palette across Paseo surfaces and derived terminal colors; requires Paseo 0.7.2 or later.
+- [paseo-dracula](https://github.com/omercnet/paseo-dracula) - Dracula Classic and Alucard Classic app themes using the official dark and light palettes across Paseo surfaces and derived terminal colors; requires Paseo 0.7.2 or later.
 - [paseo-monokai-pro](https://github.com/JrDw0/paseo-monokai-pro) - Monokai Pro's Pro, Light, Classic, Machine, Ristretto, Octagon, and Spectrum filter schemes as app themes, with each of the eight palette tokens mapped to a named color from the scheme rather than an approximation, and syntax colors left to Paseo's built-in highlight theme.
 
 ## Daemon and automation
