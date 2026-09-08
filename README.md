@@ -1,5 +1,7 @@
 # Awesome Paseo Plugins [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
 
+> **Archived:** This community has moved to [paseo-cafe/paseo-cafe](https://github.com/paseo-cafe/paseo-cafe). Thank you to everyone who contributed, shared plugins, and helped the ecosystem grow.
+
 A curated list of plugins for [Paseo](https://paseo.sh), the self-hosted orchestrator for coding agents (Claude Code, Codex, Copilot, OpenCode, Pi, and more).
 
 Paseo plugins add native workspace panels, composer pills, Command Center items, global surfaces, app themes, daemon behavior, and composer attachment sources. They run on every client connected to the daemon, including mobile.
