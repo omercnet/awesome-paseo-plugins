@@ -99,15 +99,15 @@ test("normalizes zizmor json-v1 local paths", () => {
   assert.equal(findings[0].line, 3);
 });
 
-test("validates plugin structure while accepting a repository-level license", async () => {
+test("validates plugin structure while accepting a client entrypoint", async () => {
   const root = await mkdtemp(join(tmpdir(), "plugin-checks-"));
-  const plugin = join(root, "plugins", "sample");
+  const plugin = join(root, "plugins", "client");
   try {
     await mkdir(plugin, { recursive: true });
     await writeFile(join(root, "LICENSE"), "MIT");
-    await writeFile(join(plugin, "README.md"), "# Sample");
-    await writeFile(join(plugin, "index.ts"), "export default () => () => {};");
-    await writeFile(join(plugin, "paseo-plugin.json"), '{"id":"sample"}');
+    await writeFile(join(plugin, "README.md"), "# Client");
+    await writeFile(join(plugin, "index.client.tsx"), "export default () => () => {};");
+    await writeFile(join(plugin, "paseo-plugin.json"), '{"id":"client"}');
     await writeFile(
       join(plugin, "package.json"),
       JSON.stringify({ dependencies: { example: "1.0.0" }, scripts: { postinstall: "echo no" } }),
@@ -120,6 +120,76 @@ test("validates plugin structure while accepting a repository-level license", as
       ["package-postinstall", "runtime-dependencies"],
     );
     assert.match(formatStaticFindings(findings), /ADVISORY/);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+test("validates plugin structure while accepting a server entrypoint", async () => {
+  const root = await mkdtemp(join(tmpdir(), "plugin-checks-"));
+  const plugin = join(root, "plugins", "server");
+  try {
+    await mkdir(plugin, { recursive: true });
+    await writeFile(join(root, "LICENSE"), "MIT");
+    await writeFile(join(plugin, "README.md"), "# Server");
+    await writeFile(join(plugin, "index.server.ts"), "export default () => () => {};");
+    await writeFile(join(plugin, "paseo-plugin.json"), '{"id":"server"}');
+
+    const findings = await deterministicPluginChecks(plugin, root);
+    assert.equal(findings.some((item) => item.blocking), false);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+test("blocks missing modern entrypoints", async () => {
+  const root = await mkdtemp(join(tmpdir(), "plugin-checks-"));
+  const plugin = join(root, "plugins", "missing");
+  try {
+    await mkdir(plugin, { recursive: true });
+    await writeFile(join(root, "LICENSE"), "MIT");
+    await writeFile(join(plugin, "README.md"), "# Missing");
+    await writeFile(join(plugin, "paseo-plugin.json"), '{"id":"missing"}');
+
+    const findings = await deterministicPluginChecks(plugin, root);
+    assert.equal(findings.some((item) => item.blocking), true);
+    assert.deepEqual(findings.map((item) => item.ruleId).sort(), ["entrypoint"]);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+test("accepts modern entrypoints even when a legacy file remains", async () => {
+  const root = await mkdtemp(join(tmpdir(), "plugin-checks-"));
+  const plugin = join(root, "plugins", "modern-legacy");
+  try {
+    await mkdir(plugin, { recursive: true });
+    await writeFile(join(root, "LICENSE"), "MIT");
+    await writeFile(join(plugin, "README.md"), "# Modern Legacy");
+    await writeFile(join(plugin, "index.client.tsx"), "export default () => () => {};");
+    await writeFile(join(plugin, "index.ts"), "export default () => () => {};");
+    await writeFile(join(plugin, "paseo-plugin.json"), '{"id":"modern-legacy"}');
+
+    const findings = await deterministicPluginChecks(plugin, root);
+    assert.equal(findings.some((item) => item.blocking), false);
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+});
+
+test("blocks legacy root index entrypoints", async () => {
+  const root = await mkdtemp(join(tmpdir(), "plugin-checks-"));
+  const plugin = join(root, "plugins", "legacy");
+  try {
+    await mkdir(plugin, { recursive: true });
+    await writeFile(join(root, "LICENSE"), "MIT");
+    await writeFile(join(plugin, "README.md"), "# Legacy");
+    await writeFile(join(plugin, "index.ts"), "export default () => () => {};");
+    await writeFile(join(plugin, "paseo-plugin.json"), '{"id":"legacy"}');
+
+    const findings = await deterministicPluginChecks(plugin, root);
+    assert.equal(findings.some((item) => item.blocking), true);
+    assert.deepEqual(findings.map((item) => item.ruleId).sort(), ["entrypoint"]);
   } finally {
     await rm(root, { recursive: true, force: true });
   }
