@@ -32,6 +32,12 @@ Paseo plugins add native workspace panels, composer pills, Command Center items,
 
 *Plugins that add panels to workspace tabs or the explorer.*
 
+- [advanced-markdown](https://github.com/custyhs/paseo-advanced-markdown) - Renders math formulas and Mermaid diagrams inside assistant messages in Paseo 0.8.x and 0.9.x, as an installable plugin. No Paseo fork, no patch: the official app, daemon, and plugin SDK are the only dependencies.
+- [beads](https://github.com/pasteley/paseo-beads) - A bead (bd) tracker workspace panel for Paseo.
+- [fleet-dashboard](https://github.com/ahoereth/paseo-fleet-dashboard) - A read-only Paseo 0.8 sidebar dashboard showing active workspaces and agents across this daemon and configured remote daemons, grouped by what needs attention.
+- [github-dashboard](https://github.com/tensorcopy/github-dashboard) - GitHub inside [Paseo](https://paseo.sh): the issues and pull requests you are attached to, the ones waiting on your review, your Projects boards, and the review actions that finish a pull request — without leaving the app, and with one click to hand any of them to a coding agent.
+- [linear-to-paseo](https://github.com/chrisjanwust/linear-to-paseo) - Paseo plugin: browse your Linear issues and start work on any of them in a fresh workspace with the whole ticket as the first message.
+- [paseo-canvas](https://github.com/supermomonga/paseo-plugin-canvas) - Write, review, and share Markdown documents with agents in your Paseo workspace.
 - [pi-tasks-timeline](https://github.com/mcowger/paseo-plugins/tree/main/pi-tasks-timeline) - Keeps Pi task lists visible in Paseo timelines and workspace or explorer panels, with a composer pill for active tasks.
 - [opencode-session-overview](https://github.com/mcowger/paseo-plugins/tree/main/opencode-session-overview) - Adds an agent-scoped activity pane for OpenCode sessions with session details, usage, context, tasks, loaded skills and commands, workspace metadata, and observed subagents. Requires Paseo 0.7.0-beta.2 or later.
 - [reasoning-display](https://github.com/mcowger/paseo-plugins/tree/main/reasoning-display) - Replaces built-in agent reasoning blocks with expandable Markdown cards that match Paseo's native tool-call styling, with expand-last, collapsed, and always-expand display modes. Requires Paseo 0.7.0-beta.2 or later.
