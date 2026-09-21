@@ -78,10 +78,6 @@ jobs:
 
       - name: Review plugins statically
         if: github.event_name == 'pull_request'
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
-          SCAN_MODEL: ${{ vars.SCAN_MODEL || 'google/gemini-3.1-flash-lite' }}
         run: >-
           node .github/scripts/scan-plugins.mjs
           --targets "$RUNNER_TEMP/plugin-targets.json"
@@ -94,7 +90,6 @@ jobs:
           --semgrep "$RUNNER_TEMP/security-bin/semgrep"
           --zizmor "$RUNNER_TEMP/security-bin/zizmor"
           --opencode "$GITHUB_WORKSPACE/node_modules/.bin/opencode"
-          --model "$SCAN_MODEL"
           --static-only
 
       - name: Review plugins with selected model
