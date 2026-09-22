@@ -74,9 +74,10 @@ test("rejects plugin names that can inject report markup", () => {
   assert.throws(() => parsePluginTargets(markdown), /Plugin name must contain only/);
 });
 
-test("pull_request smoke tests one plugin while scheduled runs scan all", () => {
-  const targets = parsePluginTargets(DOCUMENT);
-  assert.deepEqual(selectTargetsForEvent("pull_request", targets), [targets[0]]);
-  assert.deepEqual(selectTargetsForEvent("schedule", targets), targets);
-  assert.deepEqual(selectTargetsForEvent("workflow_dispatch", targets), targets);
+test("pull_request smoke tests paseo-dracula while scheduled runs scan all", () => {
+  const targets = [{ name: "root" }, { name: "paseo-dracula" }];
+  assert.deepEqual(selectTargetsForEvent("pull_request", targets), [targets[1]]);
+  const parsedTargets = parsePluginTargets(DOCUMENT);
+  assert.deepEqual(selectTargetsForEvent("schedule", parsedTargets), parsedTargets);
+  assert.deepEqual(selectTargetsForEvent("workflow_dispatch", parsedTargets), parsedTargets);
 });

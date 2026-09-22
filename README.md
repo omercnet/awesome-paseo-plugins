@@ -1,5 +1,7 @@
 # Awesome Paseo Plugins [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
 
+> See also [paseo-cafe/paseo-cafe](https://github.com/paseo-cafe/paseo-cafe)
+
 A curated list of plugins for [Paseo](https://paseo.sh), the self-hosted orchestrator for coding agents (Claude Code, Codex, Copilot, OpenCode, Pi, and more).
 
 Paseo plugins add native workspace panels, composer pills, Command Center items, global surfaces, app themes, daemon behavior, and composer attachment sources. They run on every client connected to the daemon, including mobile.
@@ -22,7 +24,9 @@ Paseo plugins add native workspace panels, composer pills, Command Center items,
 
 - [agent-monitor](https://github.com/omercnet/paseo-agent-monitor) - One roster for every agent on a daemon. Triage buckets (Attention / Running / Idle / Closed), project-first grouping, text filter, live diff stats, and one-tap archive sweep. Answers "which of my 38 agents needs me right now" without walking the workspace tree. Web and desktop.
 - [github-board](https://github.com/gpambrozio/paseo-plugins/tree/main/github-board) - A sidebar surface with four columns — issues, draft PRs, open PRs, and discussions — covering what you authored plus what is open on the repositories you own. Cards carry CI check counts, editable labels, and a "Send to chat" button that creates a workspace on the project matching that repository and starts an agent on the card. Requires `gh` installed and authenticated on the daemon machine. Install with `paseo plugin add gpambrozio/paseo-plugins --path github-board`.
+- [github-workbench](https://github.com/AllenReder/paseo-github-workbench) - A workbench for GitHub issues and pull requests, with account and repository views, resource refresh, and workspace actions.
 - [pr-radar](https://github.com/omercnet/paseo-pr-radar) - Turns pull requests linked to active workspaces into a viewer-aware delivery queue grouped by needs you, being handled, waiting externally, and ready, with actions to prompt an existing agent or start one; requires `gh` installed and authenticated on the daemon machine and Paseo 0.6 or later.
+- [usage-monitor](https://github.com/ABorakati/paseo-usage-monitor) - Live quota, balance, and rate-limit cards for 34 AI providers plus a token-and-cost history chart rebuilt from local agent transcripts. Web and desktop.
 
 ## Workspace panels
 
@@ -33,12 +37,14 @@ Paseo plugins add native workspace panels, composer pills, Command Center items,
 - [reasoning-display](https://github.com/mcowger/paseo-plugins/tree/main/reasoning-display) - Replaces built-in agent reasoning blocks with expandable Markdown cards that match Paseo's native tool-call styling, with expand-last, collapsed, and always-expand display modes. Requires Paseo 0.7.0-beta.2 or later.
 - [skills](https://github.com/gpambrozio/paseo-plugins/tree/main/skills) - Lists the skills and commands an agent session can run, shows where each one comes from, renders its `SKILL.md`, and invokes it on the live session. Claude and Codex sessions get their skill files read off the daemon's filesystem; every other provider shows what the running session reports. Install with `paseo plugin add gpambrozio/paseo-plugins --path skills`.
 - [subagent-activity](https://github.com/mcowger/paseo-plugins/tree/main/subagent-activity) - Adds an agent-scoped activity pane for monitoring managed Paseo descendants and provider-native subagent activity. Requires Paseo 0.7.0-beta.2 or later.
+- [workspace-activity](https://github.com/ABorakati/paseo-workspace-activity) - Adds Agent Monitor and Tasks panels to any workspace for live subagent trees, tool-call inspection, steering, cancellation, and per-agent todo progress. Web and desktop.
 
 ## Themes
 
 *App themes contributed through the plugin API.*
 
-<!-- Add theme plugins here. -->
+- [paseo-dracula](https://github.com/omercnet/paseo-dracula) - Dracula Classic and Alucard Classic app themes using the official dark and light palettes across Paseo surfaces and derived terminal colors; requires Paseo 0.7.2 or later.
+- [paseo-monokai-pro](https://github.com/JrDw0/paseo-monokai-pro) - Monokai Pro's Pro, Light, Classic, Machine, Ristretto, Octagon, and Spectrum filter schemes as app themes, with each of the eight palette tokens mapped to a named color from the scheme rather than an approximation, and syntax colors left to Paseo's built-in highlight theme.
 
 ## Daemon and automation
 
@@ -46,6 +52,7 @@ Paseo plugins add native workspace panels, composer pills, Command Center items,
 
 - [send-to-paseo](https://github.com/tomgrin10/send-to-paseo/tree/main/plugin) - A Chrome extension and plugin that send a message to Paseo straight from a GitHub or Graphite pull request page. Starts a new agent in the workspace that belongs to that PR, or creates the workspace when you don't have one.
 - [defer](https://github.com/tomgrin10/paseo-defer) - Queues a message for an agent and delivers it after a delay, at a chosen local time, or when the Claude usage window resets, waiting for the session to go idle so the message starts a new turn. Requires Paseo 0.7 or later.
+- [launchd-jobs](https://github.com/gpambrozio/paseo-plugins/tree/main/launchd-jobs) - A sidebar surface that schedules shell commands as LaunchAgents, on a five-field cron expression or a fixed interval, so launchd runs them whether or not Paseo is open. Each job shows what launchd reports, its last twenty runs with durations and exit codes, and the tail of its log. The daemon must run on macOS. Install with `paseo plugin add gpambrozio/paseo-plugins --path launchd-jobs`.
 
 ## Composer and attachments
 

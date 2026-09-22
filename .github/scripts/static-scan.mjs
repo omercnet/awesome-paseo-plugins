@@ -161,6 +161,19 @@ async function pathExists(path) {
   }
 }
 
+export async function resolvePluginEntrypoints(pluginRoot) {
+  const supportedEntrypoints = [];
+  for (const entrypoint of ["index.client.ts", "index.client.tsx", "index.server.ts", "index.server.tsx"]) {
+    if (await pathExists(join(pluginRoot, entrypoint))) supportedEntrypoints.push(join(pluginRoot, entrypoint));
+  }
+
+  const hasLegacyEntrypoint = (await Promise.all(
+    ["index.ts", "index.tsx"].map((entrypoint) => pathExists(join(pluginRoot, entrypoint))),
+  )).some(Boolean);
+
+  return { supportedEntrypoints, hasLegacyEntrypoint };
+}
+
 export async function deterministicPluginChecks(pluginRoot, repositoryRoot = pluginRoot) {
   const findings = [];
   const manifestPath = join(pluginRoot, "paseo-plugin.json");
@@ -194,18 +207,24 @@ export async function deterministicPluginChecks(pluginRoot, repositoryRoot = plu
       }),
     );
   }
-  if (!(await pathExists(join(pluginRoot, "index.ts")))) {
+
+  const { supportedEntrypoints, hasLegacyEntrypoint } = await resolvePluginEntrypoints(pluginRoot);
+
+  if (!supportedEntrypoints.length) {
     findings.push(
       finding({
         blocking: true,
-        message: "Required plugin entrypoint index.ts is missing.",
-        path: "index.ts",
+        message: hasLegacyEntrypoint
+          ? "Legacy plugin entrypoint index.ts/index.tsx is not supported; use index.client.ts[x] and/or index.server.ts[x]."
+          : "Required plugin entrypoint index.client.ts[x] and/or index.server.ts[x] is missing.",
+        path: hasLegacyEntrypoint ? "index.ts" : "index.client.ts",
         ruleId: "entrypoint",
         severity: "ERROR",
         tool: "plugin-checks",
       }),
     );
   }
+
   if (!(await Promise.all(readmeNames.map(pathExists))).some(Boolean)) {
     findings.push(
       finding({
