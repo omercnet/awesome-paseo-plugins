@@ -310,7 +310,12 @@ async function workflowFiles(sourceRoot) {
     .map((entry) => join(directory, entry.name));
 }
 
+export function staticAnalysisRoots(pluginRoot, reviewRoot) {
+  return { gitleaks: pluginRoot, osv: reviewRoot, semgrep: reviewRoot, workflows: reviewRoot };
+}
+
 export async function runStaticAnalysis({ configRoot, pluginRoot, repositoryRoot, reportsRoot, reviewRoot, tools = {} }) {
+  const scanRoots = staticAnalysisRoots(pluginRoot, reviewRoot);
   await mkdir(reportsRoot, { recursive: true });
   const findings = await deterministicPluginChecks(pluginRoot, repositoryRoot);
 
@@ -319,7 +324,7 @@ export async function runStaticAnalysis({ configRoot, pluginRoot, repositoryRoot
     tools.gitleaks ?? "gitleaks",
     [
       "dir",
-      pluginRoot,
+      scanRoots.gitleaks,
       "--config",
       join(configRoot, "gitleaks.toml"),
       "--report-format",
@@ -332,7 +337,7 @@ export async function runStaticAnalysis({ configRoot, pluginRoot, repositoryRoot
     { timeout: 180_000 },
   );
   if (![0, 1].includes(gitleaks.status)) throw new Error(`gitleaks failed: ${gitleaks.stderr}`);
-  findings.push(...parseGitleaksReport(await readJson(gitleaksReport, []), pluginRoot));
+  findings.push(...parseGitleaksReport(await readJson(gitleaksReport, []), scanRoots.gitleaks));
 
   const semgrepReport = join(reportsRoot, "semgrep.json");
   const semgrep = execute(
@@ -347,31 +352,31 @@ export async function runStaticAnalysis({ configRoot, pluginRoot, repositoryRoot
       "--metrics=off",
       "--disable-version-check",
       "--exclude=*.d.ts",
-      reviewRoot,
+      scanRoots.semgrep,
     ],
     { timeout: 180_000 },
   );
   if (semgrep.status !== 0) throw new Error(`semgrep failed: ${semgrep.stderr || semgrep.stdout}`);
-  findings.push(...parseSemgrepReport(await readJson(semgrepReport), reviewRoot));
+  findings.push(...parseSemgrepReport(await readJson(semgrepReport), scanRoots.semgrep));
 
   const osvReport = join(reportsRoot, "osv.json");
   const osv = execute(
     tools.osv ?? "osv-scanner",
-    ["scan", "source", "--recursive", "--format=json", "--output-file", osvReport, reviewRoot],
+    ["scan", "source", "--recursive", "--format=json", "--output-file", osvReport, scanRoots.osv],
     { timeout: 240_000 },
   );
   if (![0, 1].includes(osv.status) && !isEmptyOsvScan(osv)) throw new Error(`osv-scanner failed: ${osv.stderr}`);
-  findings.push(...parseOsvReport(await readJson(osvReport, { results: [] }), reviewRoot));
+  findings.push(...parseOsvReport(await readJson(osvReport, { results: [] }), scanRoots.osv));
 
-  const workflows = await workflowFiles(reviewRoot);
+  const workflows = await workflowFiles(scanRoots.workflows);
   if (workflows.length) {
     const actionlint = execute(tools.actionlint ?? "actionlint", workflows, { timeout: 120_000 });
     if (![0, 1].includes(actionlint.status)) throw new Error(`actionlint failed: ${actionlint.stderr}`);
-    findings.push(...parseActionlintOutput(`${actionlint.stdout}${actionlint.stderr}`, reviewRoot));
+    findings.push(...parseActionlintOutput(`${actionlint.stdout}${actionlint.stderr}`, scanRoots.workflows));
 
     const zizmor = execute(
       tools.zizmor ?? "zizmor",
-      ["--no-config", "--offline", "--strict-collection", "--format=json-v1", reviewRoot],
+      ["--no-config", "--offline", "--strict-collection", "--format=json-v1", scanRoots.workflows],
       { timeout: 180_000 },
     );
     let zizmorReport;
@@ -380,7 +385,7 @@ export async function runStaticAnalysis({ configRoot, pluginRoot, repositoryRoot
     } catch {
       throw new Error(`zizmor failed: ${zizmor.stderr || zizmor.stdout}`);
     }
-    findings.push(...parseZizmorReport(zizmorReport, reviewRoot));
+    findings.push(...parseZizmorReport(zizmorReport, scanRoots.workflows));
   }
 
   return findings;
