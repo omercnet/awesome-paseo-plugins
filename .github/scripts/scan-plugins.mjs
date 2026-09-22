@@ -19,8 +19,10 @@ import process from "node:process";
 import {
   deterministicPluginChecks,
   formatStaticFindings,
+  resolvePluginEntrypoints,
   runStaticAnalysis,
 } from "./static-scan.mjs";
+
 
 const MAX_REPOSITORY_BYTES = 20 * 1024 * 1024;
 const MAX_FILES = 5_000;
@@ -378,8 +380,15 @@ async function main() {
         }
 
         const manifestPath = join(resolvedPluginRoot, "paseo-plugin.json");
-        const entryPath = join(resolvedPluginRoot, "index.ts");
-        await Promise.all([readFile(manifestPath), readFile(entryPath)]);
+        const { supportedEntrypoints, hasLegacyEntrypoint } = await resolvePluginEntrypoints(resolvedPluginRoot);
+        if (!supportedEntrypoints.length) {
+          throw new Error(
+            hasLegacyEntrypoint
+              ? "Legacy plugin entrypoint index.ts/index.tsx is not supported; use index.client.ts[x] and/or index.server.ts[x]."
+              : "Required plugin entrypoint index.client.ts[x] and/or index.server.ts[x] is missing.",
+          );
+        }
+        await Promise.all([readFile(manifestPath), ...supportedEntrypoints.map((entryPath) => readFile(entryPath))]);
 
         const commit = run("git", ["rev-parse", "HEAD"], {
           cwd: repositoryRoot,

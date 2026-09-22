@@ -133,8 +133,13 @@ async function fetchRepositoryFile(repository, ref, token) {
 }
 
 export function selectTargetsForEvent(eventName, targets) {
-  return eventName === "pull_request" ? targets.slice(0, 1) : targets;
+  if (eventName === "pull_request") {
+    const smokeTarget = targets.find((target) => target.name === "paseo-dracula") ?? targets[0];
+    return smokeTarget ? [smokeTarget] : targets;
+  }
+  return targets;
 }
+
 
 async function targetsForEvent(eventPath, localReadmePath, token) {
   const event = JSON.parse(await readFile(eventPath, "utf8"));
