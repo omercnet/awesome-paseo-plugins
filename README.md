@@ -63,6 +63,11 @@ Paseo plugins add native workspace panels, composer pills, Command Center items,
 
 *Composer pills and attachment sources.*
 
+- [account-switcher](https://github.com/dutchakdev/paseo-plugin-account-switcher) - Per-agent Claude and Codex accounts, browser sign-in, and quota monitoring for Paseo.
+- [cswap-usage](https://github.com/creatorkoo/paseo-cswap-usage) - Paseo workspace panel showing usage for every claude-swap account.
+- [memory](https://github.com/lucashadfield/pi-memory/tree/master/paseo-plugin) - A durable memory store for pi agents.
+- [mermaid](https://github.com/dutchakdev/paseo-plugin-mermaid) - Render Mermaid diagrams inside the Paseo chat timeline.
+- [omp-usage-plugin](https://github.com/gray-graff/paseo-omp-usage-plugin) - Paseo plugin that surfaces Oh My Pi (OMP) plan usage and credit quotas directly in the UI — composer pill, popover, workspace panel, and settings screen.
 <!-- Add composer and attachment plugins here. -->
 
 ## Resources
