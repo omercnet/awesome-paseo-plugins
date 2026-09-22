@@ -195,7 +195,7 @@ async function isTextFile(path) {
   }
 }
 
-export async function createReviewCopy(sourceRoot, destinationRoot) {
+async function createReviewCopy(sourceRoot, destinationRoot) {
   const files = await collectFiles(sourceRoot);
   const excluded = [];
   let copied = 0;
@@ -228,6 +228,18 @@ export async function createReviewCopy(sourceRoot, destinationRoot) {
   }
 
   return { copied, excluded, total: files.length };
+}
+
+export async function prepareTargetReview(repositoryRoot, targetPath, reviewRoot) {
+  const resolvedRepositoryRoot = await realpath(repositoryRoot);
+  const resolvedPluginRoot = await realpath(resolve(repositoryRoot, targetPath));
+  if (resolvedPluginRoot !== resolvedRepositoryRoot && !resolvedPluginRoot.startsWith(`${resolvedRepositoryRoot}${sep}`)) {
+    throw new Error("Plugin path escapes the cloned repository");
+  }
+
+  await mkdir(reviewRoot, { recursive: true });
+  const coverage = await createReviewCopy(resolvedPluginRoot, reviewRoot);
+  return { coverage, pluginRoot: resolvedPluginRoot, repositoryRoot: resolvedRepositoryRoot, reviewRoot };
 }
 async function writeSourceBundle(sourceRoot, bundlePath) {
   const files = (await collectFiles(sourceRoot))
@@ -372,12 +384,12 @@ async function main() {
           repositories.set(repositoryKey, repositoryRoot);
         }
 
-        const sourcePluginRoot = resolve(repositoryRoot, target.path);
-        const resolvedRepositoryRoot = await realpath(repositoryRoot);
-        const resolvedPluginRoot = await realpath(sourcePluginRoot);
-        if (resolvedPluginRoot !== resolvedRepositoryRoot && !resolvedPluginRoot.startsWith(`${resolvedRepositoryRoot}${sep}`)) {
-          throw new Error("Plugin path escapes the cloned repository");
-        }
+        const reviewRoot = join(temporaryRoot, "reviews", `${targetIndex}`);
+        const {
+          coverage,
+          pluginRoot: resolvedPluginRoot,
+          repositoryRoot: resolvedRepositoryRoot,
+        } = await prepareTargetReview(repositoryRoot, target.path, reviewRoot);
 
         const manifestPath = join(resolvedPluginRoot, "paseo-plugin.json");
         const { supportedEntrypoints, hasLegacyEntrypoint } = await resolvePluginEntrypoints(resolvedPluginRoot);
@@ -394,9 +406,6 @@ async function main() {
           cwd: repositoryRoot,
           env: withoutSecrets(process.env),
         });
-        const reviewRoot = join(temporaryRoot, "reviews", `${targetIndex}`);
-        await mkdir(reviewRoot, { recursive: true });
-        const coverage = await createReviewCopy(resolvedPluginRoot, reviewRoot);
         const reviewPluginRoot = reviewRoot;
         const staticFindings = options.dryRun
           ? await deterministicPluginChecks(resolvedPluginRoot, resolvedRepositoryRoot)
