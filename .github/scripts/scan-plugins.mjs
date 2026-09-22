@@ -195,7 +195,7 @@ async function isTextFile(path) {
   }
 }
 
-async function createReviewCopy(sourceRoot, destinationRoot) {
+export async function createReviewCopy(sourceRoot, destinationRoot) {
   const files = await collectFiles(sourceRoot);
   const excluded = [];
   let copied = 0;
@@ -396,16 +396,16 @@ async function main() {
         });
         const reviewRoot = join(temporaryRoot, "reviews", `${targetIndex}`);
         await mkdir(reviewRoot, { recursive: true });
-        const coverage = await createReviewCopy(repositoryRoot, reviewRoot);
-        const reviewPluginRoot = resolve(reviewRoot, target.path);
+        const coverage = await createReviewCopy(resolvedPluginRoot, reviewRoot);
+        const reviewPluginRoot = reviewRoot;
         const staticFindings = options.dryRun
-          ? await deterministicPluginChecks(reviewPluginRoot, reviewRoot)
+          ? await deterministicPluginChecks(resolvedPluginRoot, resolvedRepositoryRoot)
           : await runStaticAnalysis({
               configRoot: resolve(options.securityConfigDir),
-              pluginRoot: reviewPluginRoot,
+              pluginRoot: resolvedPluginRoot,
+              repositoryRoot: resolvedRepositoryRoot,
               reportsRoot: join(temporaryRoot, "static-reports", `${targetIndex}`),
               reviewRoot,
-              sourceRoot: repositoryRoot,
               tools: {
                 actionlint: options.actionlintPath,
                 gitleaks: options.gitleaksPath,
