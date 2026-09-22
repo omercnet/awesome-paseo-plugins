@@ -26,6 +26,10 @@ async function readJson(path, fallback) {
   }
 }
 
+export function isEmptyOsvScan(result) {
+  return /No package sources found/i.test(`${result.stdout ?? ""}\n${result.stderr ?? ""}`);
+}
+
 function relativePath(root, path) {
   if (!path) return ".";
   const value = relative(root, path);
@@ -306,16 +310,16 @@ async function workflowFiles(sourceRoot) {
     .map((entry) => join(directory, entry.name));
 }
 
-export async function runStaticAnalysis({ configRoot, pluginRoot, reportsRoot, reviewRoot, sourceRoot, tools = {} }) {
+export async function runStaticAnalysis({ configRoot, pluginRoot, repositoryRoot, reportsRoot, reviewRoot, tools = {} }) {
   await mkdir(reportsRoot, { recursive: true });
-  const findings = await deterministicPluginChecks(pluginRoot, reviewRoot);
+  const findings = await deterministicPluginChecks(pluginRoot, repositoryRoot);
 
   const gitleaksReport = join(reportsRoot, "gitleaks.json");
   const gitleaks = execute(
     tools.gitleaks ?? "gitleaks",
     [
       "dir",
-      sourceRoot,
+      pluginRoot,
       "--config",
       join(configRoot, "gitleaks.toml"),
       "--report-format",
@@ -328,7 +332,7 @@ export async function runStaticAnalysis({ configRoot, pluginRoot, reportsRoot, r
     { timeout: 180_000 },
   );
   if (![0, 1].includes(gitleaks.status)) throw new Error(`gitleaks failed: ${gitleaks.stderr}`);
-  findings.push(...parseGitleaksReport(await readJson(gitleaksReport, []), sourceRoot));
+  findings.push(...parseGitleaksReport(await readJson(gitleaksReport, []), pluginRoot));
 
   const semgrepReport = join(reportsRoot, "semgrep.json");
   const semgrep = execute(
@@ -356,7 +360,7 @@ export async function runStaticAnalysis({ configRoot, pluginRoot, reportsRoot, r
     ["scan", "source", "--recursive", "--format=json", "--output-file", osvReport, reviewRoot],
     { timeout: 240_000 },
   );
-  if (![0, 1].includes(osv.status)) throw new Error(`osv-scanner failed: ${osv.stderr}`);
+  if (![0, 1].includes(osv.status) && !isEmptyOsvScan(osv)) throw new Error(`osv-scanner failed: ${osv.stderr}`);
   findings.push(...parseOsvReport(await readJson(osvReport, { results: [] }), reviewRoot));
 
   const workflows = await workflowFiles(reviewRoot);

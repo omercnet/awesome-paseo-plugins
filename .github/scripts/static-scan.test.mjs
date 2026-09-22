@@ -7,6 +7,7 @@ import test from "node:test";
 import {
   deterministicPluginChecks,
   formatStaticFindings,
+  isEmptyOsvScan,
   parseActionlintOutput,
   parseGitleaksReport,
   parseOsvReport,
@@ -47,6 +48,11 @@ test("blocks Semgrep ERROR findings and preserves advisory warnings", () => {
   assert.deepEqual(findings.map(({ blocking }) => blocking), [true, false, false]);
 });
 
+
+test("accepts only OSV's no-package-sources result as an empty scan", () => {
+  assert.equal(isEmptyOsvScan({ status: 128, stderr: "No package sources found, --help for usage information" }), true);
+  assert.equal(isEmptyOsvScan({ status: 128, stderr: "database download failed" }), false);
+});
 test("normalizes OSV, actionlint, and zizmor results", () => {
   const osv = parseOsvReport(
     {
