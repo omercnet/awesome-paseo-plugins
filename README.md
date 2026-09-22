@@ -58,7 +58,6 @@ Paseo plugins add native workspace panels, composer pills, Command Center items,
 *Composer pills and attachment sources.*
 
 - [account-switcher](https://github.com/dutchakdev/paseo-plugin-account-switcher) - Per-agent Claude and Codex accounts, browser sign-in, and quota monitoring for Paseo.
-- [coding-plan-manager](https://github.com/huangcb01/paseo-plan-manager) - 一个本地 Paseo 插件，用于集中管理多个 Codex / ChatGPT、智谱 GLM Coding Plan 和 Kimi Coding Plan，查看额度与重置时间，并把指定 Plan 写入 OpenCode、Codex、Claude Code 或 Oh My Pi 的本机配置.
 - [cswap-usage](https://github.com/creatorkoo/paseo-cswap-usage) - Paseo workspace panel showing usage for every claude-swap account.
 - [memory](https://github.com/lucashadfield/pi-memory/tree/master/paseo-plugin) - A durable memory store for pi agents.
 - [mermaid](https://github.com/dutchakdev/paseo-plugin-mermaid) - Render Mermaid diagrams inside the Paseo chat timeline.
