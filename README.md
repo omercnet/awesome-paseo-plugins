@@ -68,7 +68,7 @@ Paseo plugins add native workspace panels, composer pills, Command Center items,
 
 *Composer pills and attachment sources.*
 
-- [account-switcher](https://github.com/dutchakdev/paseo-plugin-account-switcher) - Per-agent Claude and Codex accounts, browser sign-in, and quota monitoring for Paseo.
+- [account-switcher](https://github.com/dutchakdev/paseo-plugin-account-switcher) - Use several Claude and ChatGPT/Codex subscription accounts: choose one per agent, switch a chat to another account, and see every account's limits.
 - [cswap-usage](https://github.com/creatorkoo/paseo-cswap-usage) - Paseo workspace panel showing usage for every claude-swap account.
 - [memory](https://github.com/lucashadfield/pi-memory/tree/master/paseo-plugin) - A durable memory store for pi agents.
 - [mermaid](https://github.com/dutchakdev/paseo-plugin-mermaid) - Render Mermaid diagrams inside the Paseo chat timeline.
